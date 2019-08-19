@@ -22,7 +22,7 @@ ConfigMaps allow you to decouple configuration artifacts from image content to k
 
 
 ## Create a ConfigMap
-You can use either `kubectl create configmap` or a ConfigMap generator in `kustomization.yaml` to create a ConfigMap. Note that `kubectl` starts to support `kustomization.yaml` since 1.14. 
+You can use either `kubectl create configmap` or a ConfigMap generator in `kustomization.yaml` to create a ConfigMap. Note that `kubectl` starts to support `kustomization.yaml` since 1.14.
 
 ### Create a ConfigMap Using kubectl create configmap
 
@@ -340,14 +340,14 @@ the Apiserver. The generators
 should be specified in a `kustomization.yaml` inside a directory.
 
 #### Generate ConfigMaps from files
-For example, to generate a ConfigMap from files `configure-pod-container/configmap/kubectl/game.properties`
+For example, to generate a ConfigMap from files `configure-pod-container/configmap/game.properties`
 ```shell
 # Create a kustomization.yaml file with ConfigMapGenerator
 cat <<EOF >./kustomization.yaml
 configMapGenerator:
 - name: game-config-4
   files:
-  - configure-pod-container/configmap/kubectl/game.properties
+  - configure-pod-container/configmap/game.properties
 EOF
 ```
 
@@ -391,7 +391,7 @@ new ConfigMap is generated each time the content is modified.
 
 #### Define the key to use when generating a ConfigMap from a file
 You can define a key other than the file name to use in the ConfigMap generator.
-For example, to generate a ConfigMap from files `configure-pod-container/configmap/kubectl/game.properties`
+For example, to generate a ConfigMap from files `configure-pod-container/configmap/game.properties`
 with the key `game-special-key`
 
 ```shell
@@ -400,7 +400,7 @@ cat <<EOF >./kustomization.yaml
 configMapGenerator:
 - name: game-config-5
   files:
-  - game-special-key=configure-pod-container/configmap/kubectl/game.properties
+  - game-special-key=configure-pod-container/configmap/game.properties
 EOF
 ```
 
@@ -412,7 +412,7 @@ configmap/game-config-5-m67dt67794 created
 
 #### Generate ConfigMaps from Literals
 To generate a ConfigMap from literals `special.type=charm` and `special.how=very`,
-you can specify the ConfigMap generator in `kusotmization.yaml` as
+you can specify the ConfigMap generator in `kustomization.yaml` as
 ```shell
 # Create a kustomization.yaml file with ConfigMapGenerator
 cat <<EOF >./kustomization.yaml
@@ -444,21 +444,21 @@ configmap/special-config-2-c92b5mmcf2 created
    {{< codenew file="pods/pod-single-configmap-env-variable.yaml" >}}
 
    Create the Pod:
- 
+
  ```shell
  kubectl create -f https://kubernetes.io/examples/pods/pod-single-configmap-env-variable.yaml
  ```
-   
-   Now, the Pod's output includes environment variable `SPECIAL_LEVEL_KEY=very`. 
- 
+
+   Now, the Pod's output includes environment variable `SPECIAL_LEVEL_KEY=very`.
+
 ### Define container environment variables with data from multiple ConfigMaps
- 
+
  * As with the previous example, create the ConfigMaps first.
 
    {{< codenew file="configmap/configmaps.yaml" >}}
 
    Create the ConfigMap:
- 
+
  ```shell
  kubectl create -f https://kubernetes.io/examples/configmap/configmaps.yaml
  ```
@@ -468,43 +468,43 @@ configmap/special-config-2-c92b5mmcf2 created
   {{< codenew file="pods/pod-multiple-configmap-env-variable.yaml" >}}
 
   Create the Pod:
- 
+
  ```shell
  kubectl create -f https://kubernetes.io/examples/pods/pod-multiple-configmap-env-variable.yaml
  ```
 
-  Now, the Pod's output includes environment variables `SPECIAL_LEVEL_KEY=very` and `LOG_LEVEL=INFO`. 
+  Now, the Pod's output includes environment variables `SPECIAL_LEVEL_KEY=very` and `LOG_LEVEL=INFO`.
 
-## Configure all key-value pairs in a ConfigMap as container environment variables 
+## Configure all key-value pairs in a ConfigMap as container environment variables
 
 {{< note >}}
 This functionality is available in Kubernetes v1.6 and later.
 {{< /note >}}
 
-* Create a ConfigMap containing multiple key-value pairs. 
+* Create a ConfigMap containing multiple key-value pairs.
 
   {{< codenew file="configmap/configmap-multikeys.yaml" >}}
 
   Create the ConfigMap:
- 
+
  ```shell
  kubectl create -f https://kubernetes.io/examples/configmap/configmap-multikeys.yaml
  ```
 
 * Use `envFrom` to define all of the ConfigMap's data as container environment variables. The key from the ConfigMap becomes the environment variable name in the Pod.
-   
+
  {{< codenew file="pods/pod-configmap-envFrom.yaml" >}}
 
  Create the Pod:
- 
+
  ```shell
  kubectl create -f https://kubernetes.io/examples/pods/pod-configmap-envFrom.yaml
  ```
 
- Now, the Pod's output includes environment variables `SPECIAL_LEVEL=very` and `SPECIAL_TYPE=charm`. 
+ Now, the Pod's output includes environment variables `SPECIAL_LEVEL=very` and `SPECIAL_TYPE=charm`.
 
 
-## Use ConfigMap-defined environment variables in Pod commands  
+## Use ConfigMap-defined environment variables in Pod commands
 
 You can use ConfigMap-defined environment variables in the `command` section of the Pod specification using the `$(VAR_NAME)` Kubernetes substitution syntax.
 
@@ -524,23 +524,23 @@ produces the following output in the `test-container` container:
 very charm
 ```
 
-## Add ConfigMap data to a Volume 
+## Add ConfigMap data to a Volume
 
-As explained in [Create ConfigMaps from files](#create-configmaps-from-files), when you create a ConfigMap using ``--from-file``, the filename becomes a key stored in the `data` section of the ConfigMap. The file contents become the key's value. 
+As explained in [Create ConfigMaps from files](#create-configmaps-from-files), when you create a ConfigMap using ``--from-file``, the filename becomes a key stored in the `data` section of the ConfigMap. The file contents become the key's value.
 
 The examples in this section refer to a ConfigMap named special-config, shown below.
 
 {{< codenew file="configmap/configmap-multikeys.yaml" >}}
 
 Create the ConfigMap:
- 
+
 ```shell
 kubectl create -f https://kubernetes.io/examples/configmap/configmap-multikeys.yaml
 ```
 
 ### Populate a Volume with data stored in a ConfigMap
 
-Add the ConfigMap name under the `volumes` section of the Pod specification. 
+Add the ConfigMap name under the `volumes` section of the Pod specification.
 This adds the ConfigMap data to the directory specified as `volumeMounts.mountPath` (in this case, `/etc/config`).
 The `command` section references the `special.level` item stored in the ConfigMap.
 
@@ -565,7 +565,7 @@ If there are some files in the `/etc/config/` directory, they will be deleted.
 
 ### Add ConfigMap data to a specific path in the Volume
 
-Use the `path` field to specify the desired file path for specific ConfigMap items. 
+Use the `path` field to specify the desired file path for specific ConfigMap items.
 In this case, the `SPECIAL_LEVEL` item will be mounted in the `config-volume` volume at `/etc/config/keys`.
 
 {{< codenew file="pods/pod-configmap-volume-specific-key.yaml" >}}
@@ -582,6 +582,10 @@ When the pod runs, the command `cat /etc/config/keys` produces the output below:
 very
 ```
 
+{{< caution >}}
+Like before, all previous files in the `/etc/config/` directory will be deleted.
+{{< /caution >}}
+
 ### Project keys to specific paths and file permissions
 
 You can project keys to specific paths and specific permissions on a per-file
@@ -589,7 +593,7 @@ basis. The [Secrets](/docs/concepts/configuration/secret/#using-secrets-as-files
 
 ### Mounted ConfigMaps are updated automatically
 
-When a ConfigMap already being consumed in a volume is updated, projected keys are eventually updated as well. Kubelet is checking whether the mounted ConfigMap is fresh on every periodic sync. However, it is using its local ttl-based cache for getting the current value of the ConfigMap. As a result, the total delay from the moment when the ConfigMap is updated to the moment when new keys are projected to the pod can be as long as kubelet sync period + ttl of ConfigMaps cache in kubelet.
+When a ConfigMap already being consumed in a volume is updated, projected keys are eventually updated as well. Kubelet is checking whether the mounted ConfigMap is fresh on every periodic sync. However, it is using its local ttl-based cache for getting the current value of the ConfigMap. As a result, the total delay from the moment when the ConfigMap is updated to the moment when new keys are projected to the pod can be as long as kubelet sync period (1 minute by default) + ttl of ConfigMaps cache (1 minute by default) in kubelet.
 
 {{< note >}}
 A container using a ConfigMap as a [subPath](/docs/concepts/storage/volumes/#using-subpath) volume will not receive ConfigMap updates.
@@ -636,9 +640,9 @@ data:
    ```shell
    kubectl get events
    ```
-   
+
    The output is similar to this:
-   ```   
+   ```
    LASTSEEN FIRSTSEEN COUNT NAME          KIND  SUBOBJECT  TYPE      REASON                            SOURCE                MESSAGE
    0s       0s        1     dapi-test-pod Pod              Warning   InvalidEnvironmentVariableNames   {kubelet, 127.0.0.1}  Keys [1badkey, 2alsobad] from the EnvFrom configMap default/myconfig were skipped since they are considered invalid environment variable names.
    ```
@@ -646,11 +650,11 @@ data:
 - ConfigMaps reside in a specific [namespace](/docs/concepts/overview/working-with-objects/namespaces/). A ConfigMap can only be referenced by pods residing in the same namespace.
 
 - Kubelet doesn't support the use of ConfigMaps for pods not found on the API server. This includes pods created via the Kubelet's `--manifest-url` flag, `--config` flag, or the Kubelet REST API.
-   
+
    {{< note >}}
    These are not commonly-used ways to create pods.
    {{< /note >}}
-   
+
 {{% /capture %}}
 
 {{% capture whatsnext %}}

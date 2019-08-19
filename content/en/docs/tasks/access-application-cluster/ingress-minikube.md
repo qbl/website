@@ -135,7 +135,7 @@ The following file is an Ingress resource that sends traffic to your Service via
 
 1. Create `example-ingress.yaml` from the following file:
 
-        apiVersion: extensions/v1beta1
+        apiVersion: networking.k8s.io/v1beta1 # for versions before 1.14 use extensions/v1beta1
         kind: Ingress
         metadata:
           name: example-ingress
@@ -160,7 +160,7 @@ The following file is an Ingress resource that sends traffic to your Service via
     Output:
     
     ```shell
-    ingress.extensions/example-ingress created
+    ingress.networking.k8s.io/example-ingress created
     ```
 
 1. Verify the IP address is set: 
@@ -177,6 +177,8 @@ The following file is an Ingress resource that sends traffic to your Service via
     ```
 
 1. Add the following line to the bottom of the `/etc/hosts` file. 
+
+    {{< note >}}If you are running Minikube locally, use `minikube ip` to get the external IP. The IP address displayed within the ingress list will be the internal IP.{{< /note >}}
 
     ```
     172.17.0.15 hello-world.info
